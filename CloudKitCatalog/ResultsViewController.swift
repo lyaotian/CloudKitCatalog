@@ -172,7 +172,7 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
         }
     }
     
-    func copyAttributeToClipboard() {
+    @objc func copyAttributeToClipboard() {
         if let selectedAttributeValue = selectedAttributeValue {
             let pasteBoard = UIPasteboard.general
             pasteBoard.string = selectedAttributeValue

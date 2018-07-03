@@ -75,7 +75,7 @@ class NotificationBar: UIView {
 
     }
     
-    func close() {
+    @objc func close() {
         UIView.animate(withDuration: 0.4, animations: {
             self.label.isHidden = true
             self.button.isHidden = true
@@ -93,7 +93,7 @@ class NotificationBar: UIView {
         })
     }
     
-    func showNotification() {
+    @objc func showNotification() {
         if let _ = notification, let navigationController = window?.rootViewController as? NavigationController, let mainMenuViewController = navigationController.viewControllers.first as? MainMenuTableViewController {
             close()
             if let topViewController = navigationController.topViewController as? CodeSampleViewController , topViewController.selectedCodeSample is MarkNotificationsReadSample {

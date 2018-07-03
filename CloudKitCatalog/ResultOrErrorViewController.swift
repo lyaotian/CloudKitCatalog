@@ -27,7 +27,7 @@ class ResultOrErrorViewController: UIViewController {
         }
     }
 
-    func backToCodeSample() {
+    @objc func backToCodeSample() {
         dismiss(animated: true, completion: nil)
     }
     
