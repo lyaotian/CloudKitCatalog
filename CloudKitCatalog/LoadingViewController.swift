@@ -15,7 +15,7 @@ class LoadingViewController: UIViewController {
     
     var results = Results()
     var codeSample: CodeSample?
-    var error: NSError?
+    var error: Error?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,17 +25,17 @@ class LoadingViewController: UIViewController {
     
     // MARK: - Navigation
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let spinner = activityIndicator {
             spinner.stopAnimating()
         }
         if segue.identifier == "ShowResult" {
-            if let resultsViewController = segue.destinationViewController as? ResultsViewController {
+            if let resultsViewController = segue.destination as? ResultsViewController {
                 resultsViewController.codeSample = self.codeSample
                 resultsViewController.results = self.results.items.count > 0 ? self.results : Results(items: [NoResults()])
             }
         } else if segue.identifier == "ShowError" {
-            if let errorViewController = segue.destinationViewController as? ErrorViewController {
+            if let errorViewController = segue.destination as? ErrorViewController {
                 errorViewController.error = self.error
             }
         }

@@ -23,11 +23,11 @@ class PerformQuerySample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
         if let location = data["Location"] as? CLLocation {
             
-            let container = CKContainer.defaultContainer()
+            let container = CKContainer.default()
             let publicDB = container.publicCloudDatabase
             
             let query = CKQuery(recordType: "Items", predicate: NSPredicate(value: true))
@@ -35,7 +35,7 @@ class PerformQuerySample: CodeSample {
                 CKLocationSortDescriptor(key: "location", relativeLocation: location)
             ]
             
-            publicDB.performQuery(query, inZoneWithID: nil) {
+            publicDB.perform(query, inZoneWith: nil) {
                 (recordArray, nsError) in
                 
                 let results = Results(alwaysShowAsList: true)

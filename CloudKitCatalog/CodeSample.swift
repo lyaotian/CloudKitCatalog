@@ -119,7 +119,7 @@ class LocationInput: Input {
 
 class ImageInput: Input {
     
-    var value: NSURL?
+    var value: URL?
     
     override var isValid: Bool {
         return !isRequired || value != nil
@@ -248,13 +248,13 @@ class CodeSample {
         for input in inputs {
             if let textInput = input as? TextInput {
                 _data[textInput.label] = textInput.value
-            } else if let location = input as? LocationInput, latitude = location.latitude, longitude = location.longitude {
+            } else if let location = input as? LocationInput, let latitude = location.latitude, let longitude = location.longitude {
                 _data[location.label] = CLLocation(latitude: Double(latitude), longitude: Double(longitude))
-            } else if let image = input as? ImageInput, url = image.value {
+            } else if let image = input as? ImageInput, let url = image.value {
                 _data[image.label] = url
             } else if let boolean = input as? BooleanInput {
                 _data[boolean.label] = boolean.value
-            } else if let selection = input as? SelectionInput, index = selection.value {
+            } else if let selection = input as? SelectionInput, let index = selection.value {
                 _data[selection.label] = selection.items[index].label
             }
 
@@ -262,7 +262,7 @@ class CodeSample {
         return _data
     }
     
-    func run(completionHandler: (Results, NSError!) -> Void) {
+    func run(completionHandler: @escaping (Results, Error?) -> Void) {
         completionHandler(Results(),nil)
     }
 

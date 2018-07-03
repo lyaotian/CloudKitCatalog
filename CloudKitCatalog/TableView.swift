@@ -13,10 +13,10 @@ class TableView: UITableView {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        if style == .Grouped {
+        if style == .grouped {
             backgroundView = nil
             backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
-        } else if style == .Plain {
+        } else if style == .plain {
             tableFooterView = UIView()
         }
     }

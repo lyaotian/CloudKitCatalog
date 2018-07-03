@@ -19,7 +19,7 @@ class ResultOrErrorViewController: UIViewController {
 
         navigationItem.title = "Error"
         
-        doneButton = UIBarButtonItem(title: "Done", style: .Done, target: self, action: #selector(ResultOrErrorViewController.backToCodeSample))
+        doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(ResultOrErrorViewController.backToCodeSample))
         
         if !isDrilldown {
             navigationItem.hidesBackButton = true
@@ -28,7 +28,7 @@ class ResultOrErrorViewController: UIViewController {
     }
 
     func backToCodeSample() {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
 

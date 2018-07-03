@@ -16,9 +16,9 @@ extension CKDiscoveredUserInfo: Result {
         }
         var contactType = "-"
         switch displayContact.contactType {
-        case .Organization:
+        case .organization:
             contactType = "Organization"
-        case .Person:
+        case .person:
             contactType = "Person"
         }
         return [

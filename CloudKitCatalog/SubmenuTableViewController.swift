@@ -26,18 +26,18 @@ class SubmenuTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return codeSamples.count
     }
 
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let codeSample = codeSamples[indexPath.row]
-        let cell = tableView.dequeueReusableCellWithIdentifier("SubmenuItem", forIndexPath: indexPath) as! SubmenuTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier:"SubmenuItem", for: indexPath) as! SubmenuTableViewCell
         cell.submenuLabel.text = codeSample.title
         return cell
     }
@@ -45,11 +45,11 @@ class SubmenuTableViewController: UITableViewController {
 
     // MARK: - Navigation
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowCodeSampleFromSubmenu" {
-            let codeSampleViewController = segue.destinationViewController as! CodeSampleViewController
+            let codeSampleViewController = segue.destination as! CodeSampleViewController
             if let selectedCell = sender as? SubmenuTableViewCell {
-                let indexPath = tableView.indexPathForCell(selectedCell)!
+                let indexPath = tableView.indexPath(for: selectedCell)!
                 codeSampleViewController.selectedCodeSample = codeSamples[indexPath.row]
 
             }

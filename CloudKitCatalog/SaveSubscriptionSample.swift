@@ -32,7 +32,7 @@ class SaveSubscriptionSample: CodeSample {
     }
     
     override var error: String? {
-        if let subscriptionType = data["subscriptionType"] as? String where subscriptionType == "RecordZone", let zoneName = data["zoneName"] as? String {
+        if let subscriptionType = data["subscriptionType"] as? String , subscriptionType == "RecordZone", let zoneName = data["zoneName"] as? String {
             if zoneName.isEmpty {
                 return "zoneName cannot be empty"
             } else if zoneName == CKRecordZoneDefaultName {
@@ -42,11 +42,11 @@ class SaveSubscriptionSample: CodeSample {
         return nil
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
         if let subscriptionType = data["subscriptionType"] as? String {
             
-            let container = CKContainer.defaultContainer()
+            let container = CKContainer.default()
             let privateDB = container.privateCloudDatabase
             
             let subscription: CKSubscription
@@ -57,7 +57,7 @@ class SaveSubscriptionSample: CodeSample {
             
             notificationInfo.shouldBadge = true
             
-            if let zoneName = data["zoneName"] as? String where subscriptionType == "RecordZone" {
+            if let zoneName = data["zoneName"] as? String , subscriptionType == "RecordZone" {
                 
                 let zoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKOwnerDefaultName)
                 subscription = CKSubscription(zoneID: zoneID, options: CKSubscriptionOptions(rawValue: 0))
@@ -69,17 +69,21 @@ class SaveSubscriptionSample: CodeSample {
                 let predicate: NSPredicate
                 
                 var subscriptionOptions = CKSubscriptionOptions(rawValue: 0)
-                if let firesOnRecordCreation = data["FiresOnRecordCreation"] as? Bool where firesOnRecordCreation {
-                    subscriptionOptions.unionInPlace(CKSubscriptionOptions.FiresOnRecordCreation)
+                if let firesOnRecordCreation = data["FiresOnRecordCreation"] as? Bool , firesOnRecordCreation {
+//                    subscriptionOptions.unionInPlace(CKSubscriptionOptions.FiresOnRecordCreation)
+                    subscriptionOptions = subscriptionOptions.union(.firesOnRecordCreation)
                 }
-                if let firesOnRecordUpdate = data["FiresOnRecordUpdate"] as? Bool where firesOnRecordUpdate {
-                    subscriptionOptions.unionInPlace(CKSubscriptionOptions.FiresOnRecordUpdate)
+                if let firesOnRecordUpdate = data["FiresOnRecordUpdate"] as? Bool , firesOnRecordUpdate {
+//                    subscriptionOptions.unionInPlace(CKSubscriptionOptions.FiresOnRecordUpdate)
+                    subscriptionOptions = subscriptionOptions.union(.firesOnRecordUpdate)
                 }
-                if let firesOnRecordDeletion = data["FiresOnRecordDeletion"] as? Bool where firesOnRecordDeletion {
-                    subscriptionOptions.unionInPlace(CKSubscriptionOptions.FiresOnRecordDeletion)
+                if let firesOnRecordDeletion = data["FiresOnRecordDeletion"] as? Bool , firesOnRecordDeletion {
+//                    subscriptionOptions.unionInPlace(CKSubscriptionOptions.FiresOnRecordDeletion)
+                    subscriptionOptions = subscriptionOptions.union(.firesOnRecordDeletion)
                 }
-                if let firesOnce = data["FiresOnce"] as? Bool where firesOnce {
-                    subscriptionOptions.unionInPlace(CKSubscriptionOptions.FiresOnce)
+                if let firesOnce = data["FiresOnce"] as? Bool , firesOnce {
+//                    subscriptionOptions.unionInPlace(CKSubscriptionOptions.FiresOnce)
+                    subscriptionOptions = subscriptionOptions.union(.firesOnce)
                 }
                 
                 if let beginsWithText = data["name BEGINSWITH"] as? String {
@@ -93,7 +97,7 @@ class SaveSubscriptionSample: CodeSample {
                 subscription.notificationInfo = notificationInfo
             }
             
-            privateDB.saveSubscription(subscription) {
+            privateDB.save(subscription) {
                 
                 (subscription, nsError) in
                 

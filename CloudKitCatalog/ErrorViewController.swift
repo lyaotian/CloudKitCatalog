@@ -16,16 +16,16 @@ class ErrorViewController: ResultOrErrorViewController {
 
     @IBOutlet weak var errorText: UITextView!
     
-    var error: NSError?
+    var error: Error?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         if let error = error {
-            errorCode.text = "Error Code: \(error.code)"
+            errorCode.text = "Error Code: \(error.localizedDescription)"
             errorText.text = error.localizedDescription
             errorText.textContainer.lineFragmentPadding = 0;
-            errorText.textContainerInset = UIEdgeInsetsZero;
+            errorText.textContainerInset = .zero;
         } else {
             errorCode.text = "An unexpected error occurred."
         }

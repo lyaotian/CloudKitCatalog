@@ -38,7 +38,8 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
         toggleToolbar()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         if let codeSample = codeSample as? MarkNotificationsReadSample {
             codeSample.cache.markAsRead()
         }
@@ -47,11 +48,11 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
     func toggleToolbar() {
         if toolbarHeightConstraint != nil {
             if results.moreComing {
-                toolbar.hidden = false
+                toolbar.isHidden = false
                 toolbarHeightConstraint.constant = 44
             } else {
                 toolbarHeightConstraint.constant = 0
-                toolbar.hidden = true
+                toolbar.isHidden = true
             }
         }
     }
@@ -59,14 +60,14 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
 
     // MARK: - Table view data source
 
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         if results.items.count > 0 && !results.showAsList {
             return results.items[0].attributeList.count
         }
         return 1
     }
 
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if results.items.count > 0 && !results.showAsList {
             return results.items[0].attributeList[section].attributes.count
         } else {
@@ -75,10 +76,10 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
     }
 
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         if results.showAsList {
-            let cell = tableView.dequeueReusableCellWithIdentifier("ResultCell", forIndexPath: indexPath) as! ResultTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier:"ResultCell", for: indexPath) as! ResultTableViewCell
             let result = results.items[indexPath.row]
             cell.resultLabel.text = result.summaryField ?? ""
             cell.changeLabelWidthConstraint.constant = 15
@@ -97,14 +98,14 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
         let attribute = results.items[0].attributeList[indexPath.section].attributes[indexPath.row]
         
         guard let value = attribute.value else {
-            let cell = tableView.dequeueReusableCellWithIdentifier("AttributeKeyCell", forIndexPath: indexPath) as! AttributeKeyTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier:"AttributeKeyCell", for: indexPath) as! AttributeKeyTableViewCell
             cell.attributeKey.text = attribute.key
             return cell
         }
         
         
         if attribute.image != nil {
-            let cell = tableView.dequeueReusableCellWithIdentifier("ImageCell", forIndexPath: indexPath) as! ImageTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier:"ImageCell", for: indexPath) as! ImageTableViewCell
             cell.attributeKey.text = attribute.key
             cell.attributeValue.text = value.isEmpty ? "-" : value
             cell.assetImage.image = attribute.image
@@ -113,7 +114,7 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
         
         let cellIdentifier = attribute.isNested ? "NestedAttributeCell" : "AttributeCell"
 
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! AttributeTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier:cellIdentifier, for: indexPath) as! AttributeTableViewCell
 
         cell.attributeKey.text = attribute.key
         cell.attributeValue.text = value.isEmpty ? "-" : value
@@ -121,7 +122,7 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
         return cell
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let codeSample = codeSample else { return "" }
         if results.showAsList {
             return codeSample.listHeading
@@ -132,7 +133,7 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
         
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if results.items.count > 0 && !results.showAsList {
             let attribute = results.items[0].attributeList[indexPath.section].attributes[indexPath.row]
             if attribute.image != nil {
@@ -145,11 +146,11 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
     
     // Mark: - Responder
     
-    override func canBecomeFirstResponder() -> Bool {
+    override var canBecomeFirstResponder: Bool {
         return true
     }
     
-    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         return action == #selector(ResultsViewController.copyAttributeToClipboard)
     }
     
@@ -157,14 +158,14 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
 
     
     @IBAction func handleLongPress(sender: UILongPressGestureRecognizer) {
-        if sender.state == .Ended {
-            let point = sender.locationInView(tableView)
-            let indexPath = tableView.indexPathForRowAtPoint(point)!
-            if let attributeCell = tableView.cellForRowAtIndexPath(indexPath) as? AttributeTableViewCell, let attributeValue = attributeCell.attributeValue {
+        if sender.state == .ended {
+            let point = sender.location(in: tableView)
+            let indexPath = tableView.indexPathForRow(at: point)!
+            if let attributeCell = tableView.cellForRow(at: indexPath) as? AttributeTableViewCell, let attributeValue = attributeCell.attributeValue {
                 self.becomeFirstResponder()
                 self.selectedAttributeValue = attributeValue.text ?? ""
-                let menuController = UIMenuController.sharedMenuController()
-                menuController.setTargetRect(attributeValue.frame, inView: attributeCell)
+                let menuController = UIMenuController.shared
+                menuController.setTargetRect(attributeValue.frame, in: attributeCell)
                 menuController.menuItems = [UIMenuItem(title: "Copy attribute value", action: #selector(ResultsViewController.copyAttributeToClipboard))]
                 menuController.setMenuVisible(true, animated: true)
             }
@@ -173,24 +174,23 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
     
     func copyAttributeToClipboard() {
         if let selectedAttributeValue = selectedAttributeValue {
-            let pasteBoard = UIPasteboard.generalPasteboard()
+            let pasteBoard = UIPasteboard.general
             pasteBoard.string = selectedAttributeValue
         }
     }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "DrillDown", let resultsViewController = segue.destinationViewController as? ResultsViewController, let indexPath = tableView.indexPathForSelectedRow {
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "DrillDown", let resultsViewController = segue.destination as? ResultsViewController, let indexPath = tableView.indexPathForSelectedRow {
             let result = results.items[indexPath.row]
             resultsViewController.results = Results(items: [result])
             resultsViewController.codeSample = codeSample
             resultsViewController.isDrilldown = true
-            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+            tableView.deselectRow(at: indexPath, animated: false)
         }
     }
     
-    
     @IBAction func loadMoreResults(sender: UIBarButtonItem) {
-        sender.enabled = false
+        sender.isEnabled = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: activityIndicator)
         activityIndicator.startAnimating()
         
@@ -199,36 +199,33 @@ class ResultsViewController: ResultOrErrorViewController, UITableViewDelegate, U
                 (results, nsError) in
                 
                 self.results = results
-                
-                dispatch_async(dispatch_get_main_queue()) {
-                    
-                    var indexPaths = [NSIndexPath]()
-                    for index in results.added.sort() {
-                        indexPaths.append(NSIndexPath(forRow: index, inSection: 0))
+                DispatchQueue.main.async {
+                    var indexPaths = [IndexPath]()
+                    for index in results.added.sorted() {
+                        indexPaths.append(IndexPath(row: index, section: 0))
                     }
                     if indexPaths.count > 0 {
-                        self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+                        self.tableView.insertRows(at: indexPaths, with: .automatic)
                     }
                     indexPaths = []
-                    for index in results.deleted.union(results.modified).sort() {
-                        indexPaths.append(NSIndexPath(forRow: index, inSection: 0))
+                    for index in results.deleted.union(results.modified).sorted() {
+                        indexPaths.append(IndexPath(row: index, section: 0))
                     }
                     if indexPaths.count > 0 {
-                        self.tableView.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Automatic)
+                        self.tableView.reloadRows(at: indexPaths, with: .automatic)
                     }
                     self.navigationItem.rightBarButtonItem = self.doneButton
                     self.activityIndicator.stopAnimating()
                     if results.moreComing {
-                        sender.enabled = true
+                        sender.isEnabled = true
                     } else {
-                    
-                        UIView.animateWithDuration(0.4, animations: {
+                        
+                        UIView.animate(withDuration: 0.4, animations: {
                             self.toggleToolbar()
                             self.view.layoutIfNeeded()
                         })
                         
                     }
-                    
                 }
             }
         }

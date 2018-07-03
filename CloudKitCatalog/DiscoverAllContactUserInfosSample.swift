@@ -20,16 +20,16 @@ class DiscoverAllContactUserInfosSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
-        let container = CKContainer.defaultContainer()
+        let container = CKContainer.default()
         
-        container.discoverAllContactUserInfosWithCompletionHandler {
+        container.discoverAllContactUserInfos {
             (userInfos, nsError) in
             
             let results = Results(alwaysShowAsList: true)
             
-            if let userInfos = userInfos where userInfos.count > 0 {
+            if let userInfos = userInfos , userInfos.count > 0 {
                 for userInfo in userInfos {
                     results.items.append(userInfo)
                 }

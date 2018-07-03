@@ -46,13 +46,13 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
         navigationItem.hidesBackButton = (navigationController!.viewControllers.first?.navigationItem.hidesBackButton)!
         
         let border = CALayer()
-        border.backgroundColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1).CGColor
+        border.backgroundColor = UIColor(red: 0.91, green: 0.91, blue: 0.91, alpha: 1).cgColor
         border.frame = CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 1.0)
         tableView.layer.addSublayer(border)
         
         locationManager.delegate = self
         
-        imagePickerController.sourceType = .PhotoLibrary
+        imagePickerController.sourceType = .photoLibrary
         imagePickerController.delegate = self
         
         pickerView.delegate = self
@@ -72,17 +72,17 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
             }
         }
-        runButton.enabled = runButtonIsEnabled
+        runButton.isEnabled = runButtonIsEnabled
     }
     
     
     // MARK: - Table view data source
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let codeSample = selectedCodeSample {
             return codeSample.inputs.filter({ !$0.isHidden }).count
         }
@@ -90,23 +90,23 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
 
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let codeSample = selectedCodeSample {
             let inputs = codeSample.inputs.filter { !$0.isHidden }
             let input = inputs[indexPath.row]
-            if let input = input as? TextInput, cell = tableView.dequeueReusableCellWithIdentifier("TextFieldCell", forIndexPath: indexPath) as? TextFieldTableViewCell {
+            if let input = input as? TextInput, let cell = tableView.dequeueReusableCell(withIdentifier: "TextFieldCell", for: indexPath) as? TextFieldTableViewCell {
                 cell.textInput = input
                 cell.fieldLabel.text = input.label
                 cell.textField.text = input.value
                 if input.type == .Email {
-                    cell.textField.keyboardType = .EmailAddress
+                    cell.textField.keyboardType = .emailAddress
                 }
                 cell.textField.delegate = self
                 if indexPath.row == 0 {
                     cell.textField.becomeFirstResponder()
                 }
                 return cell
-            } else if let input = input as? LocationInput, cell = tableView.dequeueReusableCellWithIdentifier("LocationFieldCell", forIndexPath: indexPath) as? LocationFieldTableViewCell {
+            } else if let input = input as? LocationInput, let cell = tableView.dequeueReusableCell(withIdentifier: "LocationFieldCell", for: indexPath) as? LocationFieldTableViewCell {
                 cell.locationInput = input
                 cell.fieldLabel.text = input.label
                 cell.longitudeField.delegate = self
@@ -115,31 +115,31 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
                     cell.latitudeField.becomeFirstResponder()
                 }
                 
-                cell.lookUpButton.enabled = CLLocationManager.authorizationStatus() != .Denied
+                cell.lookUpButton.isEnabled = CLLocationManager.authorizationStatus() != .denied
                 
                 return cell
-            } else if let input = input as? ImageInput, cell = tableView.dequeueReusableCellWithIdentifier("ImageFieldCell", forIndexPath: indexPath) as? ImageFieldTableViewCell {
+            } else if let input = input as? ImageInput, let cell = tableView.dequeueReusableCell(withIdentifier: "ImageFieldCell", for: indexPath) as? ImageFieldTableViewCell {
                 cell.fieldLabel.text = input.label
                 cell.imageInput = input
                 return cell
-            } else if let input = input as? BooleanInput, cell = tableView.dequeueReusableCellWithIdentifier("BooleanFieldCell", forIndexPath: indexPath) as? BooleanFieldTableViewCell {
+            } else if let input = input as? BooleanInput, let cell = tableView.dequeueReusableCell(withIdentifier: "BooleanFieldCell", for: indexPath) as? BooleanFieldTableViewCell {
                 cell.fieldLabel.text = input.label
-                cell.booleanField.on = input.value
+                cell.booleanField.isOn = input.value
                 cell.booleanInput = input
                 return cell
-            } else if let input = input as? SelectionInput, cell = tableView.dequeueReusableCellWithIdentifier("SelectionFieldCell", forIndexPath: indexPath) as? SelectionFieldTableViewCell {
+            } else if let input = input as? SelectionInput, let cell = tableView.dequeueReusableCell(withIdentifier: "SelectionFieldCell", for: indexPath) as? SelectionFieldTableViewCell {
                 cell.fieldLabel.text = input.label
                 cell.selectedItemLabel.text = input.items.count > 0 ? (input.value != nil ? input.items[input.value!].label : input.items[0].label ) : ""
                 cell.selectionInput = input
                 return cell
             }
         }
-        let cell = tableView.dequeueReusableCellWithIdentifier("FormFieldCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "FormFieldCell", for: indexPath)
         return cell
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if let codeSample = selectedCodeSample, _ = codeSample.inputs[indexPath.row] as? ImageInput {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if let codeSample = selectedCodeSample, let _ = codeSample.inputs[indexPath.row] as? ImageInput {
             return 236.0
         }
         return tableView.rowHeight
@@ -147,17 +147,17 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // Mark: - UITextFieldDelegate
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         if let contentView = textField.superview {
             
             if let cell = contentView.superview as? TextFieldTableViewCell {
                 cell.textInput.value = textField.text ?? ""
-            } else if let stackView = contentView.superview, cell = stackView.superview as? LocationFieldTableViewCell, text = textField.text, value = Int(text) {
+            } else if let stackView = contentView.superview, let cell = stackView.superview as? LocationFieldTableViewCell, let text = textField.text, let value = Int(text) {
                 if textField.tag == 0 {
                     cell.locationInput.latitude = value
                 } else if textField.tag == 1 {
@@ -170,23 +170,22 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    func textFieldDidBeginEditing(textField: UITextField) {
-        if let contentView = textField.superview, stackView = contentView.superview, cell = stackView.superview as? LocationFieldTableViewCell, errorLabel = cell.errorLabel {
-            errorLabel.hidden = true
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if let contentView = textField.superview, let stackView = contentView.superview, let cell = stackView.superview as? LocationFieldTableViewCell, let errorLabel = cell.errorLabel {
+            errorLabel.isHidden = true
             errorLabel.layoutIfNeeded()
         }
     }
     
     // MARK: - UIPickerViewDataSource
-    
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if let selectedSelectionCellIndex = selectedSelectionCellIndex {
-            let indexPath = NSIndexPath(forRow: selectedSelectionCellIndex, inSection: 0)
-            if let cell = tableView.cellForRowAtIndexPath(indexPath) as? SelectionFieldTableViewCell {
+            let indexPath = IndexPath(row: selectedSelectionCellIndex, section: 0)
+            if let cell = tableView.cellForRow(at:indexPath) as? SelectionFieldTableViewCell {
                 return cell.selectionInput.items.count
             }
         }
@@ -195,22 +194,22 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // MARK: - UIPickerViewDelegate
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if let selectedSelectionCellIndex = selectedSelectionCellIndex {
-            let indexPath = NSIndexPath(forRow: selectedSelectionCellIndex, inSection: 0)
-            if let cell = tableView.cellForRowAtIndexPath(indexPath) as? SelectionFieldTableViewCell {
+            let indexPath = IndexPath(row: selectedSelectionCellIndex, section: 0)
+            if let cell = tableView.cellForRow(at:indexPath) as? SelectionFieldTableViewCell {
                 return cell.selectionInput.items[row].label
             }
         }
         return nil
     }
 
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if let selectedSelectionCellIndex = selectedSelectionCellIndex {
-            let indexPath = NSIndexPath(forRow: selectedSelectionCellIndex, inSection: 0)
-            if let cell = tableView.cellForRowAtIndexPath(indexPath) as? SelectionFieldTableViewCell {
+            let indexPath = IndexPath(row: selectedSelectionCellIndex, section: 0)
+            if let cell = tableView.cellForRow(at:indexPath) as? SelectionFieldTableViewCell {
                 cell.selectedItemLabel.text = cell.selectionInput.items[row].label
-                UIView.animateWithDuration(0.4, animations: {
+                UIView.animate(withDuration: 0.4, animations: {
                     self.pickerHeightConstraint.constant = 0
                     self.view.layoutIfNeeded()
                 }) { completed in
@@ -233,81 +232,81 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     // Mark: - CLLocationManagerDelegate
     
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    private func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if let index = selectedLocationCellIndex {
-            let indexPath = NSIndexPath(forRow: index, inSection: 0)
-            let cell = tableView.cellForRowAtIndexPath(indexPath) as! LocationFieldTableViewCell
-            cell.lookUpButton.enabled = status != .Denied
-            if status == .AuthorizedWhenInUse {
+            let indexPath = IndexPath(row: index, section: 0)
+            let cell = tableView.cellForRow(at: indexPath) as! LocationFieldTableViewCell
+            cell.lookUpButton.isEnabled = status != .denied
+            if status == .authorizedWhenInUse {
                 requestLocationForCell(cell)
             }
         }
     }
     
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         if let index = selectedLocationCellIndex {
-            let indexPath = NSIndexPath(forRow: index, inSection: 0)
-            let cell = tableView.cellForRowAtIndexPath(indexPath) as! LocationFieldTableViewCell
+            let indexPath = IndexPath(row: index, section: 0)
+            let cell = tableView.cellForRow(at:indexPath) as! LocationFieldTableViewCell
             endLocationLookupForCell(cell)
-            cell.errorLabel.hidden = false
+            cell.errorLabel.isHidden = false
             cell.errorLabel.layoutIfNeeded()
         }
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let index = selectedLocationCellIndex {
-            let indexPath = NSIndexPath(forRow: index, inSection: 0)
-            let cell = tableView.cellForRowAtIndexPath(indexPath) as! LocationFieldTableViewCell
+            let indexPath = IndexPath(row: index, section: 0)
+            let cell = tableView.cellForRow(at:indexPath) as! LocationFieldTableViewCell
             endLocationLookupForCell(cell)
             if let location = locations.last {
-                cell.setCoordinate(location.coordinate)
+                cell.setCoordinate(coordinate: location.coordinate)
                 validateInputs()
             }
         }
     }
     
-    func endLocationLookupForCell(cell: LocationFieldTableViewCell) {
-        cell.latitudeField.enabled = true
-        cell.longitudeField.enabled = true
-        cell.lookUpButton.enabled = true
+    func endLocationLookupForCell(_ cell: LocationFieldTableViewCell) {
+        cell.latitudeField.isEnabled = true
+        cell.longitudeField.isEnabled = true
+        cell.lookUpButton.isEnabled = true
         cell.spinner.stopAnimating()
     }
     
-    func requestLocationForCell(cell: LocationFieldTableViewCell) {
+    func requestLocationForCell(_ cell: LocationFieldTableViewCell) {
         locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers
         locationManager.requestLocation()
-        cell.latitudeField.enabled = false
-        cell.longitudeField.enabled = false
+        cell.latitudeField.isEnabled = false
+        cell.longitudeField.isEnabled = false
         cell.spinner.startAnimating()
         cell.spinner.layoutIfNeeded()
     }
     
     // MARK: - UIImagePickerControllerDelegate
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(true, completion: nil)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String:AnyObject]) {
-        if let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage, index = selectedImageCellIndex, imageURL = getImageURL() {
-            let indexPath = NSIndexPath(forRow: index, inSection: 0)
-            let cell = tableView.cellForRowAtIndexPath(indexPath) as! ImageFieldTableViewCell
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage, let index = selectedImageCellIndex, let imageURL = getImageURL() {
+            let indexPath = IndexPath(row: index, section: 0)
+            let cell = tableView.cellForRow(at:indexPath) as! ImageFieldTableViewCell
             let imageData = UIImageJPEGRepresentation(selectedImage, 0.8)
-            imageData?.writeToURL(imageURL, atomically: true)
+            try? imageData?.write(to: imageURL, options: .atomic)
             cell.assetView.image = selectedImage
             cell.imageInput.value = imageURL
             
         }
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.dismiss(animated: true, completion: nil)
     }
 
-    func getImageURL() -> NSURL? {
+    func getImageURL() -> URL? {
         if let index = selectedImageCellIndex {
-            let manager = NSFileManager.defaultManager()
+            let manager = FileManager.default
             do {
-                let directoyURL = try manager.URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true)
+                let directoyURL = try manager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
                 let tempImageName = "ck_catalog_tmp_image_\(index)"
-                return directoyURL.URLByAppendingPathComponent(tempImageName)
+                return directoyURL.appendingPathComponent(tempImageName)
             } catch {
                 return nil
             }
@@ -319,9 +318,9 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: - Actions
     
     @IBAction func pickImage(sender: UIButton) {
-        if let contentView = sender.superview, cell = contentView.superview as? ImageFieldTableViewCell {
-            selectedImageCellIndex = tableView.indexPathForCell(cell)?.row
-            presentViewController(imagePickerController, animated: true, completion: nil)
+        if let contentView = sender.superview, let cell = contentView.superview as? ImageFieldTableViewCell {
+            selectedImageCellIndex = tableView.indexPath(for: cell)?.row
+            present(imagePickerController, animated: true, completion: nil)
         }
     }
     
@@ -329,22 +328,22 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
         if let codeSample = selectedCodeSample {
             
             if let error = codeSample.error {
-                let alertController = UIAlertController(title: "Invalid Parameter", message: error, preferredStyle: .Alert)
-                alertController.addAction(UIAlertAction(title: "Dismiss", style: .Default, handler: nil))
-                self.presentViewController(alertController, animated: true, completion: nil)
+                let alertController = UIAlertController(title: "Invalid Parameter", message: error, preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+                self.present(alertController, animated: true, completion: nil)
             } else {
-                self.navigationController!.performSegueWithIdentifier("ShowLoadingView", sender: codeSample)
+                self.navigationController!.performSegue(withIdentifier: "ShowLoadingView", sender: codeSample)
             }
             
         }
     }
 
     @IBAction func lookUpLocation(sender: UIButton) {
-        if let stackView = sender.superview, contentView = stackView.superview, cell = contentView.superview as? LocationFieldTableViewCell {
-            cell.errorLabel.hidden = true
-            cell.lookUpButton.enabled = false
-            selectedLocationCellIndex = tableView.indexPathForCell(cell)?.row
-            if CLLocationManager.authorizationStatus() == .NotDetermined {
+        if let stackView = sender.superview, let contentView = stackView.superview, let cell = contentView.superview as? LocationFieldTableViewCell {
+            cell.errorLabel.isHidden = true
+            cell.lookUpButton.isEnabled = false
+            selectedLocationCellIndex = tableView.indexPath(for: cell)?.row
+            if CLLocationManager.authorizationStatus() == .notDetermined {
                 locationManager.requestWhenInUseAuthorization()
             } else {
                 requestLocationForCell(cell)
@@ -354,11 +353,11 @@ class CodeSampleViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     @IBAction func selectOption(sender: UITapGestureRecognizer) {
-        let location = sender.locationInView(tableView)
-        if let indexPath = tableView.indexPathForRowAtPoint(location) {
+        let location = sender.location(in: tableView)
+        if let indexPath = tableView.indexPathForRow(at: location) {
             selectedSelectionCellIndex = indexPath.row
             pickerView.reloadComponent(0)
-            UIView.animateWithDuration(0.4, animations: {
+            UIView.animate(withDuration: 0.4, animations: {
                 self.pickerHeightConstraint.constant = 200
                 self.view.layoutIfNeeded()
             })

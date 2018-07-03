@@ -19,17 +19,17 @@ class FetchAllRecordZonesSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
-        let container = CKContainer.defaultContainer()
+        let container = CKContainer.default()
         let privateDB = container.privateCloudDatabase
         
-        privateDB.fetchAllRecordZonesWithCompletionHandler {
+        privateDB.fetchAllRecordZones {
             (zones, nsError) in
             
             let results = Results(alwaysShowAsList: true)
             
-            if let zones = zones where zones.count > 0 {
+            if let zones = zones , zones.count > 0 {
                 for zone in zones {
                     results.items.append(zone)
                 }

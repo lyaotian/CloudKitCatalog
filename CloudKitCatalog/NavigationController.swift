@@ -13,11 +13,11 @@ class NavigationController: UINavigationController {
     
     // MARK: - Navigation
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowLoadingView", let selectedCodeSample = sender as? CodeSample {
             selectedCodeSample.run {
                 (results,error) in
-                if let navigationController = segue.destinationViewController as? UINavigationController, let loadingViewController = navigationController.topViewController as? LoadingViewController {
+                if let navigationController = segue.destination as? UINavigationController, let loadingViewController = navigationController.topViewController as? LoadingViewController {
                     var segueIdenfier = "ShowResult"
                     if error != nil {
                         loadingViewController.error = error
@@ -26,8 +26,8 @@ class NavigationController: UINavigationController {
                         loadingViewController.results = results
                         loadingViewController.codeSample = selectedCodeSample
                     }
-                    dispatch_async(dispatch_get_main_queue()) {
-                        loadingViewController.performSegueWithIdentifier(segueIdenfier, sender: loadingViewController)
+                    DispatchQueue.main.async() {
+                        loadingViewController.performSegue(withIdentifier: segueIdenfier, sender: loadingViewController)
                     }
                 }
             }

@@ -27,7 +27,7 @@ class SaveRecordSample: CodeSample {
         )
     }
     
-    func processResult(record: CKRecord?, error: NSError?, completionHandler: (Results, NSError!) -> Void) {
+    func processResult(record: CKRecord?, error: Error?, completionHandler: (Results, Error?) -> Void) {
         let results = Results()
         
         if let record = record {
@@ -37,11 +37,11 @@ class SaveRecordSample: CodeSample {
         completionHandler(results, error)
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
-        if let recordName = data["recordName"] as? String, zoneName = data["zoneName"] as? String {
+        if let recordName = data["recordName"] as? String, let zoneName = data["zoneName"] as? String {
             
-            let container = CKContainer.defaultContainer()
+            let container = CKContainer.default()
             let privateDB = container.privateCloudDatabase
             
             let recordType = "Items"
@@ -63,22 +63,22 @@ class SaveRecordSample: CodeSample {
                     record = CKRecord(recordType: recordType, recordID: recordID)
                 }
             }
-            if let name = data["name"] as? String {
+            if let name = data["name"] as? NSString {
                 record["name"] = name
             }
             if let location = data["location"] as? CLLocation {
                 record["location"] = location
             }
-            if let imageURL = data["asset"] as? NSURL {
+            if let imageURL = data["asset"] as? URL {
                 let asset = CKAsset(fileURL: imageURL)
                 record["asset"] = asset
             }
-            privateDB.saveRecord(record) {
+            privateDB.save(record) {
                 (rec, nsError) in
                 
-                if let error = nsError where error.code == 14 {
+                if let error = nsError { // && error.code == 14
                     // In this case we are trying to overwrite an existing record so let's fetch it and modify it.
-                    privateDB.fetchRecordWithID(record.recordID) {
+                    privateDB.fetch(withRecordID: record.recordID) {
                         (rec, nsError) in
                         
                         if let rec = rec {
@@ -86,17 +86,17 @@ class SaveRecordSample: CodeSample {
                                 rec[key] = record[key]
                             }
                             
-                            privateDB.saveRecord(rec) {
+                            privateDB.save(rec) {
                                 (rec, nsError) in
                                 
-                                self.processResult(rec, error: nsError, completionHandler: completionHandler)
+                                self.processResult(record: rec, error: nsError, completionHandler: completionHandler)
                             }
                         }
                         
                     }
                 } else {
                 
-                    self.processResult(rec, error: nsError, completionHandler: completionHandler)
+                    self.processResult(record: rec, error: nsError, completionHandler: completionHandler)
                     
                 }
             }

@@ -15,7 +15,7 @@ class PermissionStatus: Result {
     
     init(status: CKApplicationPermissionStatus) {
         let attribute = Attribute(key: "CKApplicationPermissionStatus")
-        if status == .Granted {
+        if status == .granted {
             attribute.value = "Granted"
         } else {
             attribute.value = "Denied"
@@ -42,11 +42,11 @@ class RequestApplicationPermissionSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
-        let container = CKContainer.defaultContainer()
+        let container = CKContainer.default()
         
-        container.requestApplicationPermission(CKApplicationPermissions.UserDiscoverability) {
+        container.requestApplicationPermission(CKApplicationPermissions.userDiscoverability) {
             
             (applicationPermissionStatus, nsError) in
             

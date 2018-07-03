@@ -19,11 +19,11 @@ class FetchUserRecordIDSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
-        let container = CKContainer.defaultContainer()
+        let container = CKContainer.default()
         
-        container.fetchUserRecordIDWithCompletionHandler {
+        container.fetchUserRecordID {
             (recordID, nsError) in
             
             let results = Results()

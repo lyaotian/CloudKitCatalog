@@ -11,22 +11,22 @@ import CloudKit
 
 extension CKRecord: Result {
     var summaryField: String? {
-        if let name = objectForKey("name") as? String {
+        if let name = object(forKey: "name") as? String {
             return name
         }
-        if let name = objectForKey("Name") as? String {
+        if let name = object(forKey: "Name") as? String {
             return name
         }
         for key in allKeys() {
-            if let string = objectForKey(key) as? String {
+            if let string = object(forKey: key) as? String {
                 return string
             }
         }
         return recordID.recordName
     }
     var attributeList: [AttributeGroup] {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
         var metadata = [Attribute]()
         var fields = [Attribute]()
         metadata += [
@@ -38,13 +38,13 @@ extension CKRecord: Result {
             Attribute(key: "recordChangeTag", value: recordChangeTag ?? "")
         ]
         if let modificationDate = modificationDate {
-            metadata.append(Attribute(key: "modificationDate", value: dateFormatter.stringFromDate(modificationDate)))
+            metadata.append(Attribute(key: "modificationDate", value: dateFormatter.string(from: modificationDate)))
         }
         if let creationDate = creationDate {
-            metadata.append(Attribute(key: "creationDate", value: dateFormatter.stringFromDate(creationDate)))
+            metadata.append(Attribute(key: "creationDate", value: dateFormatter.string(from: creationDate)))
         }
         for key in allKeys() {
-            let value = objectForKey(key)
+            let value = object(forKey: key)
             if let value = value as? String {
                 fields.append(
                     Attribute(key: key, value: value)
@@ -56,7 +56,7 @@ extension CKRecord: Result {
                     Attribute(key: "coordinate.latitude", value: String(coordinate.latitude), isNested: true),
                     Attribute(key: "coordinate.longitude", value: String(coordinate.longitude), isNested: true)
                 ]
-            } else if let value = value as? CKAsset, path = value.fileURL.path {
+            } else if let value = value as? CKAsset, let path = value.fileURL.path as? String {
                 fields += [
                     Attribute(key: key),
                     Attribute(key: "fileURL.path", value: path, image: UIImage(contentsOfFile: path)!)

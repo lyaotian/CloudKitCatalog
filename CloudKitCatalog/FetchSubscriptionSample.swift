@@ -23,14 +23,14 @@ class FetchSubscriptionSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
         if let subscriptionID = data["subscriptionID"] as? String {
             
-            let container = CKContainer.defaultContainer()
+            let container = CKContainer.default()
             let privateDB = container.privateCloudDatabase
             
-            privateDB.fetchSubscriptionWithID(subscriptionID) {
+            privateDB.fetch(withSubscriptionID: subscriptionID) {
                 
                 (subscription, nsError) in
                 

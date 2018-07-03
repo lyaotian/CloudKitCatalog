@@ -22,16 +22,16 @@ class FetchRecordZoneSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
         if let zoneName = data["zoneName"] as? String {
             
-            let container = CKContainer.defaultContainer()
+            let container = CKContainer.default()
             let privateDB = container.privateCloudDatabase
             
             let zoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKOwnerDefaultName)
             
-            privateDB.fetchRecordZoneWithID(zoneID) {
+            privateDB.fetch(withRecordZoneID: zoneID) {
                 
                 (zone, nsError) in
                 

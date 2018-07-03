@@ -20,7 +20,7 @@ class BooleanFieldTableViewCell: FormFieldTableViewCell {
     
     
     @IBAction func changeValue(sender: UISwitch) {
-        booleanInput.value = sender.on
+        booleanInput.value = sender.isOn
     }
     
 }

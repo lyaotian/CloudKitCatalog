@@ -10,9 +10,9 @@ import CloudKit
 
 extension CKSubscription: Result {
     var summaryField: String? {
-        if subscriptionType == .RecordZone {
+        if subscriptionType == .recordZone {
             return "RecordZone(\(zoneID!.zoneName))"
-        } else if subscriptionType == .Query {
+        } else if subscriptionType == .query {
             var info = [String]()
             if let recordType = recordType {
                 info.append(recordType)
@@ -20,7 +20,7 @@ extension CKSubscription: Result {
             if let predicate = predicate {
                 info.append(predicate.predicateFormat)
             }
-            let queryParams = info.joinWithSeparator(",")
+            let queryParams = info.joined(separator: ",")
             return "Query(\(queryParams))"
         } else {
             return subscriptionID
@@ -35,22 +35,23 @@ extension CKSubscription: Result {
         var firesOnce = "N"
 
         switch self.subscriptionType {
-        case .RecordZone:
+        case .recordZone:
             subscriptionType = "RecordZone"
-        case .Query:
+        case .query:
             subscriptionType = "Query"
+        default: break
         }
         
-        if subscriptionOptions.contains(.FiresOnRecordCreation) {
+        if subscriptionOptions.contains(.firesOnRecordCreation) {
             firesOnRecordCreation = "Y"
         }
-        if subscriptionOptions.contains(.FiresOnRecordUpdate) {
+        if subscriptionOptions.contains(.firesOnRecordUpdate) {
             firesOnRecordUpdate = "Y"
         }
-        if subscriptionOptions.contains(.FiresOnRecordDeletion) {
+        if subscriptionOptions.contains(.firesOnRecordDeletion) {
             firesOnRecordDeletion = "Y"
         }
-        if subscriptionOptions.contains(.FiresOnce) {
+        if subscriptionOptions.contains(.firesOnce) {
             firesOnce = "Y"
         }
         

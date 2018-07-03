@@ -23,16 +23,16 @@ class DiscoverUserInfoWithUserRecordIDSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
         if let recordName = data["recordName"] as? String, let zoneName = data["zoneName"] as? String {
             
-            let container = CKContainer.defaultContainer()
+            let container = CKContainer.default()
         
             let zoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKOwnerDefaultName)
             let userRecordID = CKRecordID(recordName: recordName, zoneID: zoneID)
             
-            container.discoverUserInfoWithUserRecordID(userRecordID) {
+            container.discoverUserInfo(withUserRecordID: userRecordID) {
                 
                 (userInfo, nsError) in
                 

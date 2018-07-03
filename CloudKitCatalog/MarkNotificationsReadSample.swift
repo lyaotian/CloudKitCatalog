@@ -11,7 +11,7 @@ import CloudKit
 import UIKit
 
 class NotificationsCache {
-    private var results: Results = Results(alwaysShowAsList: true)
+    var results: Results = Results(alwaysShowAsList: true)
     
     func addNotification(notification: CKNotification) {
         results.items.append(notification)
@@ -25,7 +25,7 @@ class NotificationsCache {
     var newNotificationIDs: [CKNotificationID] {
         var ids = [CKNotificationID]()
         for index in results.added {
-            if let notification = results.items[index] as? CKNotification, id = notification.notificationID {
+            if let notification = results.items[index] as? CKNotification, let id = notification.notificationID {
                 ids.append(id)
             }
         }
@@ -35,7 +35,7 @@ class NotificationsCache {
     func markAsRead() {
         let notificationIDs = notificationIDsToBeMarkedAsRead
         for notificationID in notificationIDs {
-            if let index = results.items.indexOf({ result in
+            if let index = results.items.index(where: { result in
                 if let notification = result as? CKNotification {
                     return notification.notificationID == notificationID
                 } else {
@@ -45,7 +45,7 @@ class NotificationsCache {
                 results.added.remove(index)
             }
         }
-        UIApplication.sharedApplication().applicationIconBadgeNumber = results.added.count
+        UIApplication.shared.applicationIconBadgeNumber = results.added.count
     }
     
     var notificationIDsToBeMarkedAsRead: [CKNotificationID] = []
@@ -65,10 +65,10 @@ class MarkNotificationsReadSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
         let ids = cache.newNotificationIDs
-        var nsError: NSError?
+        var nsError: Error?
         
         if ids.count > 0 {
             let operation = CKMarkNotificationsReadOperation(notificationIDsToMarkRead: ids)

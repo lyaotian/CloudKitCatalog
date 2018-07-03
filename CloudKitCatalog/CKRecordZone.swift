@@ -19,8 +19,8 @@ extension CKRecordZone: Result {
                 Attribute(key: "zoneName", value: zoneID.zoneName, isNested: true),
                 Attribute(key: "ownerName", value: zoneID.ownerName, isNested: true),
                 Attribute(key: "capabilities"),
-                Attribute(key: "FetchChanges", value: capabilities.contains(.FetchChanges) ? "true" : "false", isNested: true),
-                Attribute(key: "Atomic", value: capabilities.contains(.Atomic) ? "true" : "false", isNested: true)
+                Attribute(key: "FetchChanges", value: capabilities.contains(.fetchChanges) ? "true" : "false", isNested: true),
+                Attribute(key: "Atomic", value: capabilities.contains(.atomic) ? "true" : "false", isNested: true)
             ])
         ]
     }

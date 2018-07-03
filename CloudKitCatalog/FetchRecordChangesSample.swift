@@ -13,8 +13,8 @@ import CloudKit
 class ChangedRecords {
     var changeToken: CKServerChangeToken?
     
-    private var results: Results = Results(alwaysShowAsList: true)
-    private var recordsByID: [CKRecordID: CKRecord] = [:]
+    var results: Results = Results(alwaysShowAsList: true)
+    var recordsByID: [CKRecordID: CKRecord] = [:]
     
     func getRecordByID(recordID: CKRecordID) -> CKRecord? {
         return recordsByID[recordID]
@@ -31,30 +31,30 @@ class ChangedRecords {
     }
     
     private func indexOfRecordByRecordID(recordID: CKRecordID) -> Int? {
-        return results.items.indexOf { result in
+        return results.items.index(where: { result in
             if let result = result as? CKRecord {
                 return result.recordID == recordID
             } else {
                 return false
             }
-        }
+        })
     }
     
     func markRecordAsModified(record: CKRecord) {
-        if let index = indexOfRecordByRecordID(record.recordID) {
+        if let index = indexOfRecordByRecordID(recordID: record.recordID) {
             results.modified.insert(index)
         }
     }
     
     func markRecordAsDeleted(recordID: CKRecordID) {
-        if let index = indexOfRecordByRecordID(recordID) {
+        if let index = indexOfRecordByRecordID(recordID: recordID) {
             results.deleted.insert(index)
         }
     }
     
     private func removeDeletedRecords() {
         for index in results.deleted {
-            let record = results.items.removeAtIndex(index) as! CKRecord
+            let record = results.items.remove(at: index) as! CKRecord
             recordsByID[record.recordID] = nil
         }
     }
@@ -97,9 +97,9 @@ class FetchRecordChangesSample: CodeSample {
     
     var recordCache = [CKRecordZoneID: ChangedRecords]()
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
-        if let zoneName = data["zoneName"] as? String, shouldCache = data["cache"] as? Bool {
+        if let zoneName = data["zoneName"] as? String, let shouldCache = (data["cache"] as? Bool) {
             
             let zoneID = CKRecordZoneID(zoneName: zoneName, ownerName: CKOwnerDefaultName)
             var cache = recordCache[zoneID]
@@ -117,7 +117,7 @@ class FetchRecordChangesSample: CodeSample {
             
             var changeToken: CKServerChangeToken? = nil
             
-            if let token = cache!.changeToken where shouldCache || cache!.results.moreComing {
+            if let token = cache!.changeToken , (shouldCache || cache!.results.moreComing) {
                 changeToken = token
             }
             
@@ -129,20 +129,20 @@ class FetchRecordChangesSample: CodeSample {
             operation.recordChangedBlock = {
                 (record) in
                 
-                if let cachedRecord = cache!.getRecordByID(record.recordID) {
+                if let cachedRecord = cache!.getRecordByID(recordID: record.recordID) {
                     for key in record.allKeys() {
-                        cachedRecord.setObject(record.objectForKey(key), forKey: key)
+                        cachedRecord.setObject(record.object(forKey: key), forKey: key)
                     }
-                    cache!.markRecordAsModified(cachedRecord)
+                    cache!.markRecordAsModified(record: cachedRecord)
                 } else {
-                    cache!.addRecord(record)
+                    cache!.addRecord(record: record)
                 }
             }
             
             operation.recordWithIDWasDeletedBlock = {
                 (recordID) in
                 
-                cache!.markRecordAsDeleted(recordID)
+                cache!.markRecordAsDeleted(recordID: recordID)
                 
             }
             
@@ -152,7 +152,7 @@ class FetchRecordChangesSample: CodeSample {
                 if nsError == nil {
                     cache!.changeToken = changeToken
                     
-                    cache!.setMoreComing(operation.moreComing)
+                    cache!.setMoreComing(bool: operation.moreComing)
                 }
                 
                 completionHandler(cache!.getRecords(),nsError)

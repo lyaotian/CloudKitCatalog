@@ -16,27 +16,27 @@ class NavigationBar: UINavigationBar {
     required init?(coder aDecoder: NSCoder) {
         notificationBar = NotificationBar(coder: aDecoder)
         super.init(coder: aDecoder)
-        barStyle = .Black
+        barStyle = .black
         barTintColor = UIColor(red: 0.25, green: 0.29, blue: 0.36, alpha: 1.0)
-        tintColor = UIColor.whiteColor()
+        tintColor = UIColor.white
         
         addSubview(notificationBar)
         
-        let leftConstraint = NSLayoutConstraint(item: self, attribute: .Leading, relatedBy: .Equal, toItem: notificationBar, attribute: .Leading, multiplier: 1.0, constant: 0.0)
+        let leftConstraint = NSLayoutConstraint(item: self, attribute: .leading, relatedBy: .equal, toItem: notificationBar, attribute: .leading, multiplier: 1.0, constant: 0.0)
         addConstraint(leftConstraint)
         
-        let rightConstraint = NSLayoutConstraint(item: self, attribute: .Trailing, relatedBy: .Equal, toItem: notificationBar, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
+        let rightConstraint = NSLayoutConstraint(item: self, attribute: .trailing, relatedBy: .equal, toItem: notificationBar, attribute: .trailing, multiplier: 1.0, constant: 0.0)
         addConstraint(rightConstraint)
         
-        let topConstraint = NSLayoutConstraint(item: self, attribute: .Top, relatedBy: .Equal, toItem: notificationBar, attribute: .Top, multiplier: 1.0, constant: 0.0)
+        let topConstraint = NSLayoutConstraint(item: self, attribute: .top, relatedBy: .equal, toItem: notificationBar, attribute: .top, multiplier: 1.0, constant: 0.0)
         addConstraint(topConstraint)
         
     }
     
-    func showNotificationAlert(notification: CKNotification) {
+    func showNotificationAlert(_ notification: CKNotification) {
         if notificationBar.notification == nil {
             notificationBar.notification = notification
-            bringSubviewToFront(notificationBar)
+            bringSubview(toFront: notificationBar)
             notificationBar.show()
         }
     }

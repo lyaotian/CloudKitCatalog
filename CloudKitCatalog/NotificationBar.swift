@@ -30,44 +30,44 @@ class NotificationBar: UIView {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        heightConstraint = NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 0.0)
+        heightConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0.0)
         translatesAutoresizingMaskIntoConstraints = false
 
-        backgroundColor = UIColor.blackColor()
+        backgroundColor = UIColor.black
         
         addConstraint(heightConstraint)
         
         label = UILabel()
         label.text = "You have a new CloudKit notification!"
-        label.textColor = UIColor.whiteColor()
-        label.textAlignment = .Center
+        label.textColor = UIColor.white
+        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.hidden = true
-        label.userInteractionEnabled = true
+        label.isHidden = true
+        label.isUserInteractionEnabled = true
         
         addSubview(label)
         
         button = UIButton()
-        button.setTitle("✕", forState: .Normal)
-        button.addTarget(self, action: #selector(NotificationBar.close), forControlEvents: .TouchDown)
+        button.setTitle("✕", for: .normal)
+        button.addTarget(self, action: #selector(NotificationBar.close), for: .touchDown)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.hidden = true
+        button.isHidden = true
         
         addSubview(button)
         
-        let rightConstraint = NSLayoutConstraint(item: self, attribute: .RightMargin, relatedBy: .Equal, toItem: button, attribute: .Right, multiplier: 1.0, constant: 0.0)
+        let rightConstraint = NSLayoutConstraint(item: self, attribute: .rightMargin, relatedBy: .equal, toItem: button, attribute: .right, multiplier: 1.0, constant: 0.0)
         addConstraint(rightConstraint)
         
-        let centerConstraint = NSLayoutConstraint(item: self, attribute: .CenterY, relatedBy: .Equal, toItem: button, attribute: .CenterY, multiplier: 1.0, constant: 0.0)
+        let centerConstraint = NSLayoutConstraint(item: self, attribute: .centerY, relatedBy: .equal, toItem: button, attribute: .centerY, multiplier: 1.0, constant: 0.0)
         addConstraint(centerConstraint)
         
-        let leftConstraint = NSLayoutConstraint(item: self, attribute: .LeftMargin, relatedBy: .Equal, toItem: label, attribute: .Left, multiplier: 1.0, constant: 0.0)
+        let leftConstraint = NSLayoutConstraint(item: self, attribute: .leftMargin, relatedBy: .equal, toItem: label, attribute: .left, multiplier: 1.0, constant: 0.0)
         addConstraint(leftConstraint)
         
-        let rightLabelConstraint = NSLayoutConstraint(item: button, attribute: .Left, relatedBy: .Equal, toItem: label, attribute: .Right, multiplier: 1.0, constant: 8.0)
+        let rightLabelConstraint = NSLayoutConstraint(item: button, attribute: .left, relatedBy: .equal, toItem: label, attribute: .right, multiplier: 1.0, constant: 8.0)
         addConstraint(rightLabelConstraint)
 
-        let centerLabelConstraint = NSLayoutConstraint(item: self, attribute: .CenterY, relatedBy: .Equal, toItem: label, attribute: .CenterY, multiplier: 1.0, constant: 0.0)
+        let centerLabelConstraint = NSLayoutConstraint(item: self, attribute: .centerY, relatedBy: .equal, toItem: label, attribute: .centerY, multiplier: 1.0, constant: 0.0)
         addConstraint(centerLabelConstraint)
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(NotificationBar.showNotification))
@@ -76,31 +76,31 @@ class NotificationBar: UIView {
     }
     
     func close() {
-        UIView.animateWithDuration(0.4, animations: {
-            self.label.hidden = true
-            self.button.hidden = true
+        UIView.animate(withDuration: 0.4, animations: {
+            self.label.isHidden = true
+            self.button.isHidden = true
             self.heightConstraint.constant = 0
             self.notification = nil
         })
     }
     
     func show() {
-        UIView.animateWithDuration(0.4, animations: {
+        UIView.animate(withDuration: 0.4, animations: {
             self.heightConstraint.constant = self.superview!.frame.size.height
-            self.label.hidden = false
-            self.button.hidden = false
+            self.label.isHidden = false
+            self.button.isHidden = false
             self.superview!.layoutIfNeeded()
         })
     }
     
     func showNotification() {
-        if let _ = notification, navigationController = window!.rootViewController as? NavigationController, mainMenuViewController = navigationController.viewControllers.first as? MainMenuTableViewController {
+        if let _ = notification, let navigationController = window?.rootViewController as? NavigationController, let mainMenuViewController = navigationController.viewControllers.first as? MainMenuTableViewController {
             close()
-            if let topViewController = navigationController.topViewController as? CodeSampleViewController where topViewController.selectedCodeSample is MarkNotificationsReadSample {
-                topViewController.runCode(topViewController.runButton)
+            if let topViewController = navigationController.topViewController as? CodeSampleViewController , topViewController.selectedCodeSample is MarkNotificationsReadSample {
+                topViewController.runCode(sender: topViewController.runButton)
             } else {
                 let notificationSample = mainMenuViewController.codeSampleGroups.last!.codeSamples.first
-                navigationController.performSegueWithIdentifier("ShowLoadingView", sender: notificationSample)
+                navigationController.performSegue(withIdentifier: "ShowLoadingView", sender: notificationSample)
             }
         }
     }

@@ -19,12 +19,12 @@ class FetchAllSubscriptionsSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
             
-        let container = CKContainer.defaultContainer()
+        let container = CKContainer.default()
         let privateDB = container.privateCloudDatabase
         
-        privateDB.fetchAllSubscriptionsWithCompletionHandler {
+        privateDB.fetchAllSubscriptions {
             
             (subscriptions, nsError) in
             

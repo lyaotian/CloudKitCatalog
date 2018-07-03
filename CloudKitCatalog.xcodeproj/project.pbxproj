@@ -131,7 +131,6 @@
 		41FA7D131B6C387B005BDE49 /* DeleteRecordZoneSample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteRecordZoneSample.swift; sourceTree = "<group>"; };
 		41FA7D151B6C3A9C005BDE49 /* CKRecordZoneID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CKRecordZoneID.swift; sourceTree = "<group>"; };
 		41FA7D171B6C3FDB005BDE49 /* FetchRecordZoneSample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchRecordZoneSample.swift; sourceTree = "<group>"; };
-		B54F1B1F1D63865B001F2D9B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,7 +226,6 @@
 		411002471B4DBF0D004EA2E0 = {
 			isa = PBXGroup;
 			children = (
-				B54F1B1F1D63865B001F2D9B /* README.md */,
 				411002661B4DBF38004EA2E0 /* CloudKit.framework */,
 				411002521B4DBF0D004EA2E0 /* CloudKitCatalog */,
 				411002511B4DBF0D004EA2E0 /* Products */,
@@ -398,10 +396,11 @@
 				TargetAttributes = {
 					4110024F1B4DBF0D004EA2E0 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = UW464C362E;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Push = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.iCloud = {
 								enabled = 1;
@@ -567,6 +566,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -603,6 +603,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 3.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -614,14 +615,15 @@
 				CODE_SIGN_ENTITLEMENTS = CloudKitCatalog/CloudKitCatalog.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = UW464C362E;
 				INFOPLIST_FILE = CloudKitCatalog/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.cloudkit-catalog";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kollway.cloudkit-catalog";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -633,14 +635,15 @@
 				CODE_SIGN_ENTITLEMENTS = CloudKitCatalog/CloudKitCatalog.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = UW464C362E;
 				INFOPLIST_FILE = CloudKitCatalog/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.cloudkit-catalog";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kollway.cloudkit-catalog";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

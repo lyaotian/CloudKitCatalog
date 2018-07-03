@@ -22,14 +22,14 @@ class SaveRecordZoneSample: CodeSample {
         )
     }
     
-    override func run(completionHandler: (Results, NSError!) -> Void) {
+    override func run(completionHandler: @escaping (Results, Error?) -> Void) {
         
         if let zoneName = data["zoneName"] as? String {
             
-            let container = CKContainer.defaultContainer()
+            let container = CKContainer.default()
             let privateDB = container.privateCloudDatabase
 
-            privateDB.saveRecordZone(CKRecordZone(zoneName: zoneName)) {
+            privateDB.save(CKRecordZone(zoneName: zoneName)) {
                 
                 (recordZone, nsError) in
                 
@@ -39,7 +39,7 @@ class SaveRecordZoneSample: CodeSample {
                     results.items.append(recordZone)
                 }
                 
-                completionHandler(results, nsError)
+                completionHandler(results, nil)
             }
         }
         

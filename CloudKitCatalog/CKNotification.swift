@@ -16,12 +16,13 @@ extension CKNotification: Result {
     
     var notificationTypeString: String {
         switch notificationType {
-        case .Query:
+        case .query:
             return "Query"
-        case .ReadNotification:
+        case .readNotification:
             return "ReadNotification"
-        case .RecordZone:
+        case .recordZone:
             return "RecordZone"
+        default:return ""
         }
     }
     
@@ -32,7 +33,7 @@ extension CKNotification: Result {
                 Attribute(key: "notificationType", value: notificationTypeString),
                 Attribute(key: "alertBody", value: alertBody ?? "-"),
                 Attribute(key: "soundName", value: soundName ?? "-"),
-                Attribute(key: "badge", value: badge != nil ? String(badge) : "-"),
+                Attribute(key: "badge", value: "\(badge?.stringValue ?? "-")"),
                 Attribute(key: "category", value: category ?? "-"),
                 Attribute(key: "subscriptionID", value: subscriptionID ?? "-")
             ])

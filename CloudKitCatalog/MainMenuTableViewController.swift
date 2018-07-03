@@ -19,10 +19,11 @@ class MainMenuTableViewController: UITableViewController {
         loadMenu()
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         if codeSampleGroups.count > 0 {
             if let _ = codeSampleGroups.last?.codeSamples.first as? MarkNotificationsReadSample {
-                tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: codeSampleGroups.count - 1, inSection: 0)], withRowAnimation: .None)
+                tableView.reloadRows(at: [IndexPath(row: codeSampleGroups.count - 1, section: 0)], with: .none)
             }
         }
     }
@@ -102,33 +103,33 @@ class MainMenuTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return codeSampleGroups.count
     }
 
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let codeSampleGroup = codeSampleGroups[indexPath.row]
-        let cell = tableView.dequeueReusableCellWithIdentifier("MainMenuItem", forIndexPath: indexPath) as! MainMenuTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier:"MainMenuItem", for: indexPath) as! MainMenuTableViewCell
         cell.menuLabel.text = codeSampleGroup.title
         cell.menuIcon.image = codeSampleGroup.icon
         if codeSampleGroup.codeSamples.count > 1 {
-            cell.accessoryType = .DisclosureIndicator
+            cell.accessoryType = .disclosureIndicator
         } else if codeSampleGroup.codeSamples.count == 1 {
             let codeSample = codeSampleGroup.codeSamples.first
-            if let notificationSample = codeSample as? MarkNotificationsReadSample where UIApplication.sharedApplication().isRegisteredForRemoteNotifications() {
+            if let notificationSample = codeSample as? MarkNotificationsReadSample , UIApplication.shared.isRegisteredForRemoteNotifications {
                 if notificationSample.cache.addedIndices.count > 0 {
                     cell.badgeLabel.superview!.layer.cornerRadius = cell.badgeLabel.font.pointSize * 1.2/2
                     cell.badgeLabel.text = String(notificationSample.cache.addedIndices.count)
-                    cell.badgeLabel.superview!.hidden = false
-                    cell.badgeLabel.hidden = false
+                    cell.badgeLabel.superview!.isHidden = false
+                    cell.badgeLabel.isHidden = false
                 } else {
-                    cell.badgeLabel.hidden = true
-                    cell.badgeLabel.superview!.hidden = true
+                    cell.badgeLabel.isHidden = true
+                    cell.badgeLabel.superview!.isHidden = true
                 }
             }
         }
@@ -138,7 +139,7 @@ class MainMenuTableViewController: UITableViewController {
 
     // MARK: - Navigation
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let codeSampleGroup = codeSampleGroups[indexPath.row]
         let segueIdentifier: String
         if codeSampleGroup.codeSamples.count > 1 {
@@ -146,18 +147,18 @@ class MainMenuTableViewController: UITableViewController {
         } else {
             segueIdentifier = "ShowCodeSampleFromMenu"
         }
-        self.performSegueWithIdentifier(segueIdentifier, sender: self)
+        self.performSegue(withIdentifier: segueIdentifier, sender: self)
     }
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let indexPath = tableView.indexPathForSelectedRow {
             let selectedCodeSampleGroup = codeSampleGroups[indexPath.row]
             if segue.identifier == "ShowSubmenu" {
-                let submenuViewController = segue.destinationViewController as! SubmenuTableViewController
+                let submenuViewController = segue.destination as! SubmenuTableViewController
                 submenuViewController.codeSamples = selectedCodeSampleGroup.codeSamples
                 submenuViewController.groupTitle = selectedCodeSampleGroup.title
             } else if segue.identifier == "ShowCodeSampleFromMenu" && selectedCodeSampleGroup.codeSamples.count > 0 {
-                let codeSampleViewController = segue.destinationViewController as! CodeSampleViewController
+                let codeSampleViewController = segue.destination as! CodeSampleViewController
                 codeSampleViewController.selectedCodeSample = selectedCodeSampleGroup.codeSamples[0]
                 codeSampleViewController.groupTitle = selectedCodeSampleGroup.title
             }
